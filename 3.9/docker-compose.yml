@@ -3,7 +3,7 @@
 
 services:
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.9
+    image: docker.io/necposs/zookeeper:3.9.4
     ports:
       - '2181:2181'
     volumes:
