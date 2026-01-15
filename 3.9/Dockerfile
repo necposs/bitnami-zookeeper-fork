@@ -4,11 +4,7 @@
 #FROM docker.io/bitnami/minideb:bookworm
 FROM debian:sid-slim
 
-ARG DOWNLOADS_URL="downloads.bitnami.com/files/stacksmith"
-ARG TARGETARCH
-
 ENV HOME="/" \
-    OS_ARCH="${TARGETARCH:-amd64}" \
     OS_FLAVOUR="debian-12" \
     OS_NAME="linux" \
     PATH="/opt/bitnami/common/bin:/opt/bitnami/java/bin:/opt/bitnami/zookeeper/bin:$PATH"
@@ -23,9 +19,11 @@ RUN install_packages openjdk-17-jre-headless
 RUN mkdir -p /tmp/bitnami/pkg/cache/
 
 RUN cd /tmp/bitnami/pkg/cache/; \
-    COMPONENT="wait-for-port-1.0.10-5-linux-${OS_ARCH}-debian-12"; \
-    curl -sSL -O "https://${DOWNLOADS_URL}/${COMPONENT}.tar.gz"; \
-    tar -zxf "${COMPONENT}.tar.gz" -C /opt/bitnami --strip-components=2 --no-same-owner ; \
+    COMPONENT=wait-for-port-linux-amd64; \
+    mkdir -p /opt/bitnami/common/bin; \
+    curl -sSL -O "https://github.com/bitnami/wait-for-port/releases/download/v1.0.10/${COMPONENT}.tar.gz"; \
+    tar -zxf "${COMPONENT}.tar.gz" -C /opt/bitnami/common/bin --no-same-owner ; \
+    mv /opt/bitnami/common/bin/wait-for-port-linux-amd64 /opt/bitnami/common/bin/wait-for-port; \
     rm -rf ${COMPONENT}.tar.gz;
 
 RUN cd /tmp/bitnami/pkg/cache/; \
